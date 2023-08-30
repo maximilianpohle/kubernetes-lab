@@ -1,0 +1,41 @@
+apiVersion: elasticsearch.k8s.elastic.co/v1
+kind: Elasticsearch
+metadata:
+  name: k8s
+spec:
+  version: 8.9.1
+  nodeSets:
+  - name: default
+    count: 2
+    podTemplate:
+      spec:
+        containers:
+        - name: elasticsearch
+          resources:
+            requests:
+              memory: 2Gi
+              cpu: 100m
+            limits:
+              memory: 2Gi
+        initContainers:
+        - name: elastic-internal-init-keystore
+          resources: # override the default resources set by the operator
+            limits:
+              cpu: 100m
+              memory: 256Mi
+            requests:
+              cpu: 100m
+              memory: 256Mi
+        - name: elastic-internal-suspend
+          resources: # override the default resources set by the operator
+            limits:
+              cpu: 100m
+              memory: 256Mi
+            requests:
+              cpu: 100m
+              memory: 256Mi
+        - name: sysctl
+          securityContext:
+            privileged: true
+            runAsUser: 0
+          command: ['sh', '-c', 'sysctl -w vm.max_map_count=262144']
