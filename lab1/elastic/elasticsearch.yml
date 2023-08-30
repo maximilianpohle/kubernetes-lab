@@ -2,6 +2,7 @@ apiVersion: elasticsearch.k8s.elastic.co/v1
 kind: Elasticsearch
 metadata:
   name: k8s
+  namespace: elastic
 spec:
   version: 8.9.1
   nodeSets:
